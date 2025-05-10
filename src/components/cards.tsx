@@ -170,8 +170,7 @@ const WhatWeDoSection: React.FC = () => {
               } ${getTransitionClasses()}`}
               style={{ transitionDelay: `${150 + index * 100}ms` }}
               onClick={() => setActiveService(activeService === service.id ? null : service.id)}
-              onMouseEnter={() => setActiveService(service.id)}
-              onMouseLeave={() => setActiveService(null)}
+
             >
               {/* Top decorative bar */}
               <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${service.color} rounded-t-xl transform origin-left transition-all duration-300 ${

@@ -155,9 +155,8 @@ const FeaturesSection: React.FC = () => {
                       ? "bg-white shadow-xl shadow-blue-100/30 scale-[1.02]" 
                       : "hover:bg-white hover:shadow-lg"
                   }`}
-                  onMouseEnter={() => setActiveFeature(feature.id)}
-                  onMouseLeave={() => setActiveFeature(null)}
                   onClick={() => setActiveFeature(activeFeature === feature.id ? null : feature.id)}
+
                 >
                   <div className="flex gap-5">
                     <div className={`rounded-lg p-3 bg-gradient-to-r ${feature.color} text-white flex-shrink-0 shadow-lg`}>
@@ -224,7 +223,7 @@ const FeaturesSection: React.FC = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <span className="font-medium text-sm">Custom Code</span>
+                  <span className="font-medium text-sm text-black">Custom Code</span>
                 </div>
               </div>
             </div>
