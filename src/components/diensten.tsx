@@ -183,6 +183,7 @@ const FeaturesSection: React.FC = () => {
           <motion.div 
             className="w-full xl:col-span-5 lg:col-span-6 2xl:-mx-5 xl:-mx-0"
             initial="hidden"
+            viewport={{ once: true }}
             animate={isInView ? "visible" : "hidden"}
             variants={containerVariants}
           >

@@ -131,6 +131,7 @@ const Footer: React.FC = () => {
       <motion.div 
         className="px-4 pt-12 pb-8 mx-auto sm:px-6 lg:px-8 max-w-7xl relative z-10"
         initial="hidden"
+        viewport={{ once: true }}
         animate={isInView ? "visible" : "hidden"}
         variants={containerVariants}
       >

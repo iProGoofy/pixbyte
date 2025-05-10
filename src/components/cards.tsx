@@ -192,6 +192,7 @@ const WhatWeDoSection: React.FC = () => {
         <motion.div
           className="text-center mb-16 md:mb-20"
           initial="hidden"
+          viewport={{ once: true }}
           animate={isInView ? "visible" : "hidden"}
           variants={titleVariants}
         >
