@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   creator: "PixByte",
   publisher: "PixByte",
   icons: {
-    icon: "/favicon.ico?v=2",
+    icon: "/favicon.ico",
   },
 };
 

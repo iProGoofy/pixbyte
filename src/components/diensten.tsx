@@ -278,6 +278,7 @@ const FeaturesSection: React.FC = () => {
               {/* Main image */}
               <div className="relative">
                 <Image
+                priority={false}
                   src="/img/coding.png"
                   alt="Feature tailwind section"
                   width={1200}
