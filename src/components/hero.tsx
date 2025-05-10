@@ -14,11 +14,8 @@ interface Particle {
   opacity: number;
 }
 
-interface HeroSectionProps {
-  // Je kunt hier extra props toevoegen indien nodig
-}
 
-const HeroSection: React.FC<HeroSectionProps> = () => {
+const HeroSection: React.FC= () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   

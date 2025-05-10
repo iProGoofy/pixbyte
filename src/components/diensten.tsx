@@ -10,23 +10,25 @@ const FeaturesSection: React.FC = () => {
 
   // Check if element is in viewport
   useEffect(() => {
+    const node = sectionRef.current;
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsInView(entry.isIntersecting);
       },
       { threshold: 0.2 }
     );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+  
+    if (node) {
+      observer.observe(node);
     }
-
+  
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
+      if (node) {
+        observer.unobserve(node);
       }
     };
   }, []);
+  
 
   // Feature items data
   const features = [
@@ -207,7 +209,7 @@ const FeaturesSection: React.FC = () => {
               className="space-y-8 mt-12"
               variants={containerVariants}
             >
-              {features.map((feature, index) => (
+              {features.map((feature) => (
                 <motion.div 
                   key={feature.id}
                   className={`p-5 rounded-xl transition-all duration-300 ${
