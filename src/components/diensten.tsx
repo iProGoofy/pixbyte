@@ -1,41 +1,38 @@
 'use client';
 import React, { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 
 const FeaturesSection: React.FC = () => {
   const [isInView, setIsInView] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const [activeFeature, setActiveFeature] = useState<number | null>(null);
 
-  // Check if element is in viewport
+  // Vereenvoudigde IntersectionObserver - alleen laden wanneer nodig
   useEffect(() => {
     const node = sectionRef.current;
+    if (!node) return;
+    
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsInView(entry.isIntersecting);
+        if (entry.isIntersecting && !isInView) {
+          setIsInView(true);
+          // Verwijder observer na activatie om verdere berekeningen te voorkomen
+          observer.disconnect();
+        }
       },
-      { threshold: 0.2 }
+      { threshold: 0.1 }
     );
   
-    if (node) {
-      observer.observe(node);
-    }
-  
-    return () => {
-      if (node) {
-        observer.unobserve(node);
-      }
-    };
-  }, []);
-  
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [isInView]);
 
   // Feature items data
   const features = [
     {
       id: 1,
       title: "Web Development",
-      description: "Wereldwijd zijn er 4,57 miljard internetgebruikers, waarvan de helft van het gebruik via de telefoon is. Social media vormt 25% van alle digitale media consumptie. U merkt al dat in dit digitale tijdperk een sterke online aanwezigheid onmisbaar is. Er rest alleen de vraag nog hoe u gaat opvallen tussen alle anderen.",
+      description: "Wereldwijd zijn er 4,57 miljard internetgebruikers, waarvan de helft van het gebruik via de telefoon is. Social media vormt 25% van alle digitale media consumptie. U merkt al dat in dit digitale tijdperk een sterke online aanwezigheid onmisbaar is.",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -57,7 +54,7 @@ const FeaturesSection: React.FC = () => {
     {
       id: 2,
       title: "Branding",
-      description: "Een succesvolle onderneming begint bij een identiteit. Hiervoor is een duidelijke merkstrategie nodig. Waar staat uw merk voor? Schept u wel de juiste verwachtingen voor uw merk? Valt u op in de markt? Bij een goede branding beantwoordt uw merk al deze vragen voor u.",
+      description: "Een succesvolle onderneming begint bij een identiteit. Hiervoor is een duidelijke merkstrategie nodig. Waar staat uw merk voor? Schept u wel de juiste verwachtingen voor uw merk? Valt u op in de markt?",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +76,7 @@ const FeaturesSection: React.FC = () => {
     {
       id: 3,
       title: "Haal het maximale uit uw onderneming",
-      description: "Ondernemen is nu anders dan vroeger. Waar ondernemers vaak niet bewust van zijn is dat vele processen slimmer kunnen door digitalisering en het gebruik van slimme methodieken. Bent u bewust van wat er beter kan, of loopt u achter de feiten aan?",
+      description: "Ondernemen is nu anders dan vroeger. Waar ondernemers vaak niet bewust van zijn is dat vele processen slimmer kunnen door digitalisering en het gebruik van slimme methodieken.",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -100,74 +97,22 @@ const FeaturesSection: React.FC = () => {
     },
   ];
 
-  // Animatie varianten
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.3,
-        delayChildren: 0.2,
-      },
-    },
-  };
+  // Verminder complexiteit door slechts één decoratief element te gebruiken
+  const decorationElement = 
+    <div
+      className="absolute rounded-full bg-gradient-to-r from-blue-200/10 to-purple-200/10 blur-xl hidden lg:block"
+      style={{
+        top: '30%',
+        left: '10%',
+        width: '300px',
+        height: '300px',
+        zIndex: 0,
+      }}
+    ></div>;
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.7,
-        ease: "easeOut",
-      },
-    },
-  };
-
-  const titleVariants = {
-    hidden: { opacity: 0, y: -20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.7,
-        ease: "easeOut",
-      },
-    },
-  };
-
-  const imageVariants = {
-    hidden: { opacity: 0, x: 50 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        duration: 0.8,
-        ease: "easeOut",
-        delay: 0.3,
-      },
-    },
-  };
-
-  // Functie om decoratieve elementen te genereren
-  const renderDecorationElements = () => {
-    return [...Array(3)].map((_, i) => (
-      <div
-        key={i}
-        className={`absolute rounded-full bg-gradient-to-r ${
-          i % 2 === 0 ? "from-blue-200/10 to-purple-200/10" : "from-purple-200/10 to-blue-200/10"
-        } blur-xl hidden lg:block`}
-        style={{
-          top: `${10 + Math.random() * 70}%`,
-          left: `${Math.random() * 40}%`,
-          width: `${Math.random() * 300 + 100}px`,
-          height: `${Math.random() * 300 + 100}px`,
-          zIndex: 0,
-          animationDuration: `${Math.random() * 20 + 10}s`,
-          animationDelay: `${Math.random() * 5}s`,
-        }}
-      ></div>
-    ));
+  // CSS klassen genereren op basis van isInView (geen complexe animaties meer)
+  const getContentClasses = () => {
+    return `transition-opacity duration-700 ${isInView ? 'opacity-100' : 'opacity-0'}`;
   };
 
   return (
@@ -175,22 +120,17 @@ const FeaturesSection: React.FC = () => {
       ref={sectionRef} 
       className="py-24 overflow-hidden bg-gradient-to-b from-white to-gray-50 relative"
     >
-      {/* Decoratieve elementen */}
-      {renderDecorationElements()}
+      {/* Beperkt tot één decoratief element */}
+      {decorationElement}
       
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 gap-14 items-center lg:grid-cols-12 lg:gap-16">
-          <motion.div 
-            className="w-full xl:col-span-5 lg:col-span-6 2xl:-mx-5 xl:-mx-0"
-            initial="hidden"
-            viewport={{ once: true }}
-            animate={isInView ? "visible" : "hidden"}
-            variants={containerVariants}
+          {/* Linker kolom - Tekst en features */}
+          <div 
+            className={`w-full xl:col-span-5 lg:col-span-6 2xl:-mx-5 xl:-mx-0 ${getContentClasses()}`}
+            style={{ transitionDelay: '100ms' }}
           >
-            <motion.div 
-              className="relative"
-              variants={titleVariants}
-            >
+            <div className="relative">
               <span className="text-base font-medium bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600 mb-2 block lg:text-left inline-flex items-center">
                 <span className="w-8 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mr-3 hidden lg:inline-block"></span>
                 Waar wij voor staan
@@ -204,29 +144,23 @@ const FeaturesSection: React.FC = () => {
               <p className="text-gray-600 mt-4 text-lg max-w-xl">
                 Laat ons uw digitale uitdagingen oplossen, zodat u zich kunt concentreren op het laten groeien van uw bedrijf.
               </p>
-            </motion.div>
+            </div>
 
-            <motion.div 
-              className="space-y-8 mt-12"
-              variants={containerVariants}
-            >
+            <div className="space-y-8 mt-12">
               {features.map((feature) => (
-                <motion.div 
+                <div 
                   key={feature.id}
                   className={`p-5 rounded-xl transition-all duration-300 ${
                     activeFeature === feature.id 
                       ? "bg-white shadow-xl shadow-blue-100/30 scale-[1.02]" 
                       : "hover:bg-white hover:shadow-lg"
                   }`}
-                  variants={itemVariants}
                   onMouseEnter={() => setActiveFeature(feature.id)}
                   onMouseLeave={() => setActiveFeature(null)}
                   onClick={() => setActiveFeature(activeFeature === feature.id ? null : feature.id)}
                 >
                   <div className="flex gap-5">
-                    <div className={`rounded-lg p-3 bg-gradient-to-r ${feature.color} text-white flex-shrink-0 shadow-lg transform transition-all duration-300 ${
-                      activeFeature === feature.id ? "rotate-6 scale-110" : ""
-                    }`}>
+                    <div className={`rounded-lg p-3 bg-gradient-to-r ${feature.color} text-white flex-shrink-0 shadow-lg`}>
                       {feature.icon}
                     </div>
                     <div>
@@ -248,9 +182,7 @@ const FeaturesSection: React.FC = () => {
                         <span>Meer weten</span>
                         <svg 
                           xmlns="http://www.w3.org/2000/svg" 
-                          className={`w-4 h-4 transition-transform duration-300 ${
-                            activeFeature === feature.id ? "translate-x-1" : ""
-                          }`}
+                          className="w-4 h-4"
                           fill="none" 
                           viewBox="0 0 24 24" 
                           stroke="currentColor"
@@ -260,82 +192,45 @@ const FeaturesSection: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
-          {/* Afbeelding met floating effect */}
-          <motion.div 
-            className="w-full xl:col-span-7 lg:col-span-6 lg:block"
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            variants={imageVariants}
+          {/* Rechter kolom - Afbeelding */}
+          <div 
+            className={`w-full xl:col-span-7 lg:col-span-6 lg:block ${getContentClasses()}`}
+            style={{ transitionDelay: '300ms' }}
           >
             <div className="relative w-full">
-              {/* Decorative circle backdrop */}
+              {/* Eenvoudigere decoratieve elementen */}
               <div className="absolute -top-12 -right-12 w-64 h-64 bg-gradient-to-r from-blue-200/20 to-purple-200/20 rounded-full blur-3xl"></div>
               
-              {/* Main image */}
+              {/* Geoptimaliseerde afbeelding */}
               <div className="relative">
                 <Image
-                priority={false}
+                  priority={false}
                   src="/img/coding.png"
-                  alt="Feature tailwind section"
+                  alt="Feature section"
                   width={1200}
                   height={800}
-                  className="w-full rounded-2xl lg:h-auto object-cover shadow-2xl shadow-blue-200/40"
-                  style={{
-                    animation: "float 6s ease-in-out infinite",
-                  }}
+                  className="w-full rounded-2xl lg:h-auto object-cover shadow-xl shadow-blue-200/40"
                 />
                 
-                {/* Floating elements */}
-                <div className="absolute -top-8 -left-8 lg:flex hidden items-center gap-2 bg-white p-4 rounded-xl shadow-lg animate-bounce-slow">
-                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+                {/* Vereenvoudigde elementen - alleen tonen op desktop */}
+                <div className="absolute top-4 left-4 lg:flex hidden items-center gap-2 bg-white p-3 rounded-xl shadow-md">
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <span className="font-medium text-sm">100% Custom Code</span>
-                </div>
-                
-                <div className="absolute -bottom-6 right-12 lg:flex hidden items-center gap-2 bg-white p-4 rounded-xl shadow-lg animate-pulse-slow">
-                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-                    </svg>
-                  </div>
-                  <span className="font-medium text-sm">Snelle Levering</span>
+                  <span className="font-medium text-sm">Custom Code</span>
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
-      
-      {/* Custom animation styles */}
-      <style jsx global>{`
-        @keyframes float {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-15px); }
-          100% { transform: translateY(0px); }
-        }
-        .animate-bounce-slow {
-          animation: bounce 5s infinite ease-in-out;
-        }
-        .animate-pulse-slow {
-          animation: pulse 5s infinite cubic-bezier(0.4, 0, 0.6, 1);
-        }
-        @keyframes bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
-        }
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.8; }
-        }
-      `}</style>
     </section>
   );
 };

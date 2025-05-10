@@ -1,6 +1,5 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
 
 // Type voor onze diensten
 interface Service {
@@ -16,24 +15,25 @@ const WhatWeDoSection: React.FC = () => {
   const [isInView, setIsInView] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  // Check if element is in viewport
+  // Geoptimaliseerde IntersectionObserver - laadt alleen wanneer nodig
   useEffect(() => {
     const currentRef = sectionRef.current;
-  
+    if (!currentRef) return;
+    
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsInView(entry.isIntersecting);
+        if (entry.isIntersecting && !isInView) {
+          setIsInView(true);
+          // Verwijder observer na activatie om verdere berekeningen te voorkomen
+          observer.disconnect();
+        }
       },
-      { threshold: 0.2 }
+      { threshold: 0.1 }
     );
   
-    if (currentRef) observer.observe(currentRef);
-  
-    return () => {
-      if (currentRef) observer.unobserve(currentRef);
-    };
-  }, []);
-  
+    observer.observe(currentRef);
+    return () => observer.disconnect();
+  }, [isInView]);
 
   // Diensten data
   const services: Service[] = [
@@ -105,7 +105,7 @@ const WhatWeDoSection: React.FC = () => {
     },
     {
       id: 4,
-      title: "Kwaliteit",
+      title: "Kwaliteit", 
       description: "Kwaliteit die u ziet, betrouwbaarheid die u voelt. Wij hanteren de hoogste standaarden in alles wat we doen, van codering tot klantenservice.",
       color: "from-emerald-500 to-teal-600",
       icon: (
@@ -127,74 +127,28 @@ const WhatWeDoSection: React.FC = () => {
     },
   ];
 
-  // Animatie varianten
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
+  // Gebruik CSS-klassen op basis van isInView (vereenvoudigde fade-in)
+  const getTransitionClasses = (delay = 0) => {
+    return `transition-all duration-700 ease-out ${isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`;
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut",
-      },
-    },
-  };
-
-  const titleVariants = {
-    hidden: { opacity: 0, y: -20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.7,
-        ease: "easeOut",
-      },
-    },
-  };
-
-  // Functie om decoratieve blokken te genereren
-  const renderDecorationBlocks = () => {
-    return [...Array(5)].map((_, i) => (
-      <div
-        key={i}
-        className={`absolute rounded-xl bg-gradient-to-r ${
-          i % 2 === 0 ? "from-blue-200/20 to-purple-200/20" : "from-purple-200/20 to-blue-200/20"
-        } blur-xl hidden lg:block`}
-        style={{
-          top: `${Math.random() * 80}%`,
-          left: `${Math.random() * 80}%`,
-          width: `${Math.random() * 100 + 100}px`,
-          height: `${Math.random() * 100 + 100}px`,
-          zIndex: 0,
-          animationDuration: `${Math.random() * 10 + 20}s`,
-          animationDelay: `${Math.random() * 5}s`,
-          transform: `rotate(${Math.random() * 360}deg)`,
-        }}
-      ></div>
-    ));
-  };
+  // Één statische decoratief element in plaats van veel willekeurige blokken
+  const staticDecoration = (
+    <>
+      <div className="absolute top-20 left-20 w-32 h-32 rounded-xl bg-gradient-to-r from-blue-200/20 to-purple-200/20 blur-xl hidden lg:block"></div>
+      <div className="absolute bottom-32 right-24 w-40 h-40 rounded-xl bg-gradient-to-r from-purple-200/20 to-blue-200/20 blur-xl hidden lg:block"></div>
+    </>
+  );
 
   return (
     <section ref={sectionRef} className="relative w-full px-4 py-20 md:py-28 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
-      {/* Decoratieve elementen */}
-      {renderDecorationBlocks()}
+      {/* Vereenvoudigde decoratieve elementen */}
+      {staticDecoration}
+      
       <div className="relative z-10 max-w-7xl mx-auto">
-        <motion.div
-          className="text-center mb-16 md:mb-20"
-          initial="hidden"
-          viewport={{ once: true }}
-          animate={isInView ? "visible" : "hidden"}
-          variants={titleVariants}
+        <div
+          className={`text-center mb-16 md:mb-20 ${getTransitionClasses()}`}
+          style={{ transitionDelay: '100ms' }}
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-black to-gray-700 bg-clip-text text-transparent">
             Wat kunnen wij voor u betekenen?
@@ -203,23 +157,18 @@ const WhatWeDoSection: React.FC = () => {
             Ontdek hoe onze diensten uw bedrijf naar een hoger niveau tillen
           </p>
           <div className="w-24 h-1 bg-gradient-to-r from-blue-400 to-purple-500 mx-auto mt-6 rounded-full"></div>
-        </motion.div>
-
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6 lg:gap-8"
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          variants={containerVariants}
-        >
-          {services.map((service) => (
-            <motion.div
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6 lg:gap-8">
+          {services.map((service, index) => (
+            <div
               key={service.id}
               className={`relative group rounded-xl bg-white p-6 transition-all duration-300 ${
                 activeService === service.id
                   ? "shadow-xl scale-[1.02] z-10"
                   : "hover:shadow-lg hover:scale-[1.01]"
-              }`}
-              variants={itemVariants}
+              } ${getTransitionClasses()}`}
+              style={{ transitionDelay: `${150 + index * 100}ms` }}
               onClick={() => setActiveService(activeService === service.id ? null : service.id)}
               onMouseEnter={() => setActiveService(service.id)}
               onMouseLeave={() => setActiveService(null)}
@@ -229,10 +178,10 @@ const WhatWeDoSection: React.FC = () => {
                 activeService === service.id ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
               }`}></div>
               
-              {/* Icon */}
-              <div className={`w-14 h-14 rounded-lg flex items-center justify-center mb-5 transition-all duration-500 ${
-                activeService === service.id 
-                  ? `bg-gradient-to-r ${service.color} text-white rotate-3`
+              {/* Icon - vereenvoudigd voor betere prestaties */}
+              <div className={`w-14 h-14 rounded-lg flex items-center justify-center mb-5 transition-all duration-300 ${
+                activeService === service.id
+                  ? `bg-gradient-to-r ${service.color} text-white`
                   : "bg-gray-100 text-gray-700 group-hover:bg-gray-200"
               }`}>
                 {service.icon}
@@ -251,42 +200,40 @@ const WhatWeDoSection: React.FC = () => {
                   : service.description.split(' ').slice(0, 6).join(' ') + '...'}
               </p>
               
-              {/* Learn more indicator */}
+              {/* Indicator */}
               <div className={`mt-4 text-sm font-medium flex items-center transition-all duration-300 ${
                 activeService === service.id ? `text-transparent bg-clip-text bg-gradient-to-r ${service.color}` : "text-gray-400"
               }`}>
                 {activeService === service.id ? "Minder info" : "Meer informatie"}
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className={`ml-1 w-4 h-4 transition-transform duration-300 ${activeService === service.id ? "rotate-180" : ""}`} 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`ml-1 w-4 h-4 transition-transform duration-300 ${activeService === service.id ? "rotate-180" : ""}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
         
-        {/* CTA Sectie */}
-        <motion.div 
-          className="mt-16 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ delay: 0.8, duration: 0.6 }}
+        {/* CTA Sectie - vereenvoudigd */}
+        <div
+          className={`mt-16 text-center ${getTransitionClasses()}`}
+          style={{ transitionDelay: '600ms' }}
         >
-          <a 
-            href="/contact" 
-            className="inline-flex items-center px-6 py-3 rounded-full bg-black text-white hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl hover:translate-y-[-2px] transform"
+          <a
+            href="/contact"
+            className="inline-flex items-center px-6 py-3 rounded-full bg-black text-white hover:bg-gray-800 transition-all shadow-md"
           >
             <span>Neem contact op</span>
             <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
           </a>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
