@@ -6,11 +6,9 @@ import Services from "@/components/diensten";
 export default function Home() {
   return (
  <>
-
 <HeroSection />
 <Cards />
 <Services />
-
  </>
   );
 }
