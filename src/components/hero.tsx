@@ -113,8 +113,8 @@ const HeroSection: React.FC= () => {
           {/* Tekst sectie */}
           <div className={`w-full lg:w-1/2 lg:pr-12 mb-12 lg:mb-0 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 mb-6 leading-tight">
-              Transformeer uw visie naar
-              <span className="block bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">een digitale realiteit</span>
+              TRANSFORMEER UW VISIE NAAR
+              <span className="block bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">EEN DIGITALE REALITEIT</span>
             </h1>
             <p className="text-base sm:text-lg text-gray-600 mb-8 max-w-xl">
               Geef je bedrijf een boost met innovatieve oplossingen die groei en

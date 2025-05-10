@@ -36,9 +36,9 @@ const Navbar: React.FC = () => {
 
   // Navigatie links
   const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Over ons', path: '/over-ons' },
-    { name: 'Prijzen', path: '/prijzen' },
+    { name: 'HOME', path: '/' },
+    { name: 'OVER', path: '/over-ons' },
+    { name: 'PRIJZEN', path: '/prijzen' },
   ];
 
   // Contact gegevens
@@ -114,10 +114,10 @@ const Navbar: React.FC = () => {
                 </div>
                 <div>
                   <div className="text-lg font-bold bg-gradient-to-br from-blue-500 to-purple-600 bg-clip-text text-transparent transition-all">
-                    PixByte
+                    PIXBYTE
                   </div>
                   <div className="text-xs text-gray-500 font-medium">
-                    Transformeer uw digitale visie
+                    TRANSFORMEER UW DIGITALE VISIE
                   </div>
                 </div>
               </div>
@@ -204,10 +204,10 @@ const Navbar: React.FC = () => {
                 </div>
                 <div>
                   <div className="text-lg font-bold bg-gradient-to-br from-blue-500 to-purple-600 bg-clip-text text-transparent transition-all">
-                    PixByte
+                   PIXBYTE
                   </div>
                   <div className="text-xs text-gray-500 font-medium">
-                    Transformeer uw digitale visie
+                    TRANSFORMEER UW DIGITALE VISIE
                   </div>
                 </div>
               </div>
