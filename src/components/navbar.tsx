@@ -107,7 +107,7 @@ const Navbar: React.FC = () => {
             scrolled ? 'h-16' : 'h-20'
           }`}>
             {/* Logo met slogan */}
-            <Link href="/" className="flex items-center group">
+            <Link href="#" className="flex items-center group">
               <div className="flex items-center">
                 <div className={`mr-3 relative transition-all duration-300 ${
                   scrolled ? 'scale-90' : 'scale-100'
@@ -168,7 +168,7 @@ const Navbar: React.FC = () => {
               ))}
               
               {/* Contact button with nice gradient and animation */}
-              <Link href="/contact" className="ml-3">
+              <Link href="#" className="ml-3">
                 <motion.button 
                   className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-5 py-2 rounded-lg font-medium text-sm transition-all shadow-md hover:shadow-lg hover:shadow-blue-200"
                   whileHover={{ scale: 1.03 }}
@@ -236,7 +236,7 @@ const Navbar: React.FC = () => {
                 
                 <motion.div variants={mobileItemVariants}>
                   <Link 
-                    href="/contact" 
+                    href="#" 
                     className="block mt-2 mx-3"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >

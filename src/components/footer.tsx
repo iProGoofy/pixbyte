@@ -58,29 +58,29 @@ const Footer: React.FC = () => {
     {
       title: "Navigatie",
       items: [
-        { name: "Home", href: "/" },
-        { name: "Diensten", href: "/diensten" },
-        { name: "Over ons", href: "/over-ons" },
-        { name: "Projecten", href: "/projecten" },
-        { name: "Contact", href: "/contact" },
+        { name: "Home", href: "#" },
+        { name: "Diensten", href: "#" },
+        { name: "Over ons", href: "#" },
+        { name: "Projecten", href: "#" },
+        { name: "Contact", href: "#" },
       ],
     },
     {
       title: "Diensten",
       items: [
-        { name: "Web Development", href: "/diensten/web-development" },
-        { name: "Branding", href: "/diensten/branding" },
-        { name: "Digitale Strategie", href: "/diensten/digitale-strategie" },
-        { name: "SEO Optimalisatie", href: "/diensten/seo" },
+        { name: "Web Development", href: "#" },
+        { name: "Branding", href: "#" },
+        { name: "Digitale Strategie", href: "#" },
+        { name: "SEO Optimalisatie", href: "#" },
       ],
     },
     {
       title: "Informatie",
       items: [
-        { name: "Prijzen", href: "/prijzen" },
-        { name: "FAQ", href: "/faq" },
-        { name: "Vacatures", href: "/vacatures" },
-        { name: "Privacy beleid", href: "/privacy" },
+        { name: "Prijzen", href: "#" },
+        { name: "FAQ", href: "#" },
+        { name: "Vacatures", href: "#" },
+        { name: "Privacy beleid", href: "#" },
       ],
     },
   ];
@@ -137,7 +137,7 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           {/* Company info */}
           <motion.div className="lg:col-span-4" variants={itemVariants}>
-            <Link href="/" className="flex items-center">
+            <Link href="#" className="flex items-center">
                                 <Image 
                                   src="/img/logo.svg" 
                                   alt="PixByte Logo" 

@@ -29,10 +29,15 @@ export const metadata: Metadata = {
   authors: [{ name: "PixByte" }],
   creator: "PixByte",
   publisher: "PixByte",
-  viewport: "width=device-width, initial-scale=1, viewport-fit=cover",
   icons: {
     icon: "/favicon.ico?v=2",
   },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
