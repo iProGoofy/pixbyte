@@ -3,6 +3,7 @@ import { Archivo, Archivo_Narrow, Bebas_Neue, Manrope } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
+import { Analytics } from "@vercel/analytics/next"
 
 const bebasNeue = Bebas_Neue({
   subsets: ["latin"],
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
           <Navbar />
           <main>{children}</main>
+          <Analytics />
           <Footer />
         
       </body>
