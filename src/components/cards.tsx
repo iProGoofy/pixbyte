@@ -128,7 +128,7 @@ const WhatWeDoSection: React.FC = () => {
   ];
 
   // Gebruik CSS-klassen op basis van isInView (vereenvoudigde fade-in)
-  const getTransitionClasses = (delay = 0) => {
+  const getTransitionClasses = () => {
     return `transition-all duration-700 ease-out ${isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`;
   };
 
