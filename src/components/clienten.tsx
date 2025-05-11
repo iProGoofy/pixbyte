@@ -140,7 +140,7 @@ const ClientPortfolioSection: React.FC = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full py-16 sm:py-20 md:py-28 bg-gradient-to-b from-white to-gray-50 overflow-hidden"
+      className="relative w-full py-16 sm:py-20 md:py-28 bg-white overflow-hidden"
     >
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500/10 via-purple-500/20 to-blue-500/10"></div>
