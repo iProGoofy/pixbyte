@@ -19,7 +19,7 @@ const HeroSection: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [typedText, setTypedText] = useState('');
   const fullText = 'TRANSFORMEER UW VISIE NAAR EEN DIGITALE REALITEIT';
-  const [firstPart, secondPart] = ['TRANSFORMEER UW VISIE NAAR', 'EEN DIGITALE REALITEIT'];
+  const [firstPart] = ['TRANSFORMEER UW VISIE NAAR', 'EEN DIGITALE REALITEIT'];
   const [showGradient, setShowGradient] = useState(false);
 
   // Animation effect voor fade-in elementen
