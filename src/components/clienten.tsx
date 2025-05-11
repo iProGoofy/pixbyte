@@ -16,7 +16,7 @@ const clients: Client[] = [
   {
     id: 1,
     name: 'CoachedByOsman',
-    logo: '/img/clients/coachedbyosman.png',
+    logo: '/img/clients/Coachedbyosman.png',
     url: 'https://www.coachedbyosman.nl',
     description: 'Coaching & Training'
   },
