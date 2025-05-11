@@ -31,18 +31,10 @@ const ClientPortfolioSection: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
+
 
   // Check if mobile on mount and on resize
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+
 
   // Intersection observer for animation
   useEffect(() => {
