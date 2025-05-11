@@ -146,7 +146,7 @@ const Footer: React.FC = () => {
                                   height={70} 
                                   className="transition-transform duration-500 group-hover:rotate-3"
                                 />
-              <span className="ml-3 text-xl font-bold text-gray-900">PixByte</span>
+              <span className="ml-3 text-xl font-bold text-gray-900">PIXBYTE</span>
             </Link>
             
             <p className="mt-6 text-base text-gray-600 max-w-md">

@@ -117,7 +117,7 @@ const Navbar: React.FC = () => {
                     PIXBYTE
                   </div>
                   <div className="text-xs text-gray-500 font-medium">
-                    TRANSFORMEER UW DIGITALE VISIE
+                    SMALL BYTES, BIG IMPACT
                   </div>
                 </div>
               </div>
@@ -207,7 +207,7 @@ const Navbar: React.FC = () => {
                    PIXBYTE
                   </div>
                   <div className="text-xs text-gray-500 font-medium">
-                    TRANSFORMEER UW DIGITALE VISIE
+                    SMALL BYTES, BIG IMPACT
                   </div>
                 </div>
               </div>
