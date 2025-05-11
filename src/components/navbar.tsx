@@ -1,17 +1,19 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Phone } from 'lucide-react';
+import { Mail, Phone, Menu, X } from 'lucide-react';
 
 const Navbar: React.FC = () => {
+  // State voor navigatie functionaliteit
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeLink, setActiveLink] = useState('');
   const [isMounted, setIsMounted] = useState(false);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
-  // Effect voor scroll detectie - voegt schaduw en kleiner formaat toe bij scrollen
+  // Effect voor scroll detectie en client-side initialisatie
   useEffect(() => {
     setIsMounted(true);
     
@@ -23,11 +25,25 @@ const Navbar: React.FC = () => {
       }
     };
 
-    // Zet de huidige pagina als active link bij initialisatie
+    // Set active link based on current pathname
     setActiveLink(window.location.pathname);
 
+    // Scroll event listener
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    
+    // Handle clicks outside mobile menu to close it
+    const handleClickOutside = (event: MouseEvent) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   const toggleMenu = () => {
@@ -37,8 +53,10 @@ const Navbar: React.FC = () => {
   // Navigatie links
   const navLinks = [
     { name: 'HOME', path: '/' },
-    { name: 'OVER', path: '/over-ons' },
-    { name: 'PRIJZEN', path: '/prijzen' },
+    { name: 'OVER ONS', path: '/over-ons' },
+    { name: 'DIENSTEN', path: '/diensten' },
+    { name: 'PROJECTEN', path: '/projecten' },
+    { name: 'BLOG', path: '/blog' },
   ];
 
   // Contact gegevens
@@ -47,127 +65,71 @@ const Navbar: React.FC = () => {
     phone: '+31 6 12345678'
   };
 
-  // Animatie varianten voor menu items
-  const menuItemVariants = {
-    hidden: { opacity: 0, y: -10 },
-    visible: (i: number) => ({
+  // Animatie varianten
+  const navVariants = {
+    initial: { opacity: 0, y: -20 },
+    animate: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.4, ease: "easeOut" }
+    }
+  };
+
+  const linkVariants = {
+    initial: { opacity: 0, y: -10 },
+    animate: (i: number) => ({
       opacity: 1,
       y: 0,
       transition: {
-        delay: i * 0.1,
-        duration: 0.5,
+        delay: i * 0.08,
+        duration: 0.3,
         ease: "easeOut"
       }
     }),
-    exit: { opacity: 0, y: -10 }
+    hover: { 
+      scale: 1.05,
+      transition: { duration: 0.2 }
+    }
   };
-
-  // Animatie voor underline indicator
-  const underlineVariants = {
-    hidden: { width: 0, opacity: 0 },
-    visible: { width: '100%', opacity: 1, transition: { duration: 0.3 } }
-  };
-
-  // Mobiel menu varianten
+  
   const mobileMenuVariants = {
-    hidden: { height: 0, opacity: 0 },
-    visible: { 
-      height: 'auto', 
-      opacity: 1,
-      transition: { 
-        duration: 0.4,
-        ease: [0.22, 1, 0.36, 1],
-        staggerChildren: 0.1,
-        delayChildren: 0.2
-      }
-    },
-    exit: { 
-      height: 0, 
+    closed: { 
       opacity: 0,
-      transition: { 
+      clipPath: 'inset(0 0 100% 0)',
+      transition: {
         duration: 0.3,
-        ease: [0.22, 1, 0.36, 1],
+        ease: [0.4, 0, 0.2, 1],
         staggerChildren: 0.05,
         staggerDirection: -1
+      }
+    },
+    open: { 
+      opacity: 1,
+      clipPath: 'inset(0 0 0 0)',
+      transition: {
+        duration: 0.4,
+        ease: [0.4, 0, 0.2, 1],
+        staggerChildren: 0.1,
+        delayChildren: 0.1
       }
     }
   };
 
   const mobileItemVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: { opacity: 1, x: 0, transition: { duration: 0.3 } },
-    exit: { opacity: 0, x: -20, transition: { duration: 0.2 } }
+    closed: { opacity: 0, x: -20 },
+    open: { opacity: 1, x: 0 }
   };
 
   // Don't render client-side only content during SSR
   if (!isMounted) {
     return (
-      <header className="w-full fixed top-0 z-50">
-        <div className="w-full backdrop-blur-md transition-all duration-500 bg-white/80">
-          <div className="container mx-auto px-4 md:px-6 lg:px-8">
-            <nav className="flex items-center justify-between transition-all duration-300 h-20">
-              {/* Logo placeholder during SSR */}
-              <div className="flex items-center group">
-                <div className="mr-3 relative transition-all duration-300 scale-100">
-                  {/* Logo placeholder */}
-                  <div className="w-[70px] h-[70px]"></div>
-                </div>
-                <div>
-                  <div className="text-lg font-bold bg-gradient-to-br from-blue-500 to-purple-600 bg-clip-text text-transparent transition-all">
-                    PIXBYTE
-                  </div>
-                  <div className="text-xs text-gray-500 font-medium">
-                    SMALL BYTES, BIG IMPACT
-                  </div>
-                </div>
-              </div>
-              
-              {/* Desktop Menu placeholder */}
-              <div className="hidden md:flex items-center">
-                {/* Navigation Links */}
-                <div className="flex items-center space-x-2 mr-6">
-                  {navLinks.map((link) => (
-                    <div key={link.path} className="relative">
-                      <div className="px-4 py-2 text-sm font-medium text-gray-700">
-                        {link.name}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                
-                {/* Contact info placeholder */}
-                <div className="relative h-8 overflow-hidden rounded-l-full pl-4">
-                  <div className="relative h-full px-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-l-full flex items-center space-x-4">
-                    <div className="flex items-center text-white text-xs font-medium">
-                      <Mail size={14} className="mr-1.5" />
-                      <span>{contactInfo.email}</span>
-                    </div>
-                    <div className="flex items-center text-white text-xs font-medium">
-                      <Phone size={14} className="mr-1.5" />
-                      <span>{contactInfo.phone}</span>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Contact button placeholder */}
-                <div className="ml-3">
-                  <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-5 py-2 rounded-lg font-medium text-sm transition-all shadow-md">
-                    Contact
-                  </button>
-                </div>
-              </div>
-              
-              {/* Mobile Menu Button placeholder */}
-              <div className="md:hidden">
-                <button className="p-2 focus:outline-none rounded-md">
-                  <div className="w-6 flex flex-col items-end justify-center gap-1.5 relative">
-                    <span className="block h-0.5 w-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"></span>
-                    <span className="block h-0.5 w-4 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"></span>
-                    <span className="block h-0.5 w-5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"></span>
-                  </div>
-                </button>
-              </div>
-            </nav>
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md">
+        <div className="container mx-auto px-4">
+          <div className="h-20 flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="w-10 h-10 mr-3"></div>
+              <span className="font-bold text-xl">PIXBYTE</span>
+            </div>
           </div>
         </div>
       </header>
@@ -175,228 +137,207 @@ const Navbar: React.FC = () => {
   }
 
   return (
-    <header className="w-full fixed top-0 z-50">
-      <div 
-        className={`w-full backdrop-blur-md transition-all duration-500 ${
-          scrolled 
-            ? 'bg-white/95 shadow-lg shadow-blue-100/20' 
-            : 'bg-white/80'
-        }`}
-      >
-        <div className="container mx-auto px-4 md:px-6 lg:px-8">
-          <nav className={`flex items-center justify-between transition-all duration-300 ${
+    <motion.header
+      initial="initial"
+      animate="animate"
+      variants={navVariants}
+      className="fixed top-0 left-0 right-0 z-50"
+    >
+      <div className={`w-full transition-all duration-500 ${
+        scrolled 
+          ? 'bg-white/95 shadow-lg shadow-blue-100/20' 
+          : 'bg-white/80 backdrop-blur-md'
+      }`}>
+        <div className="container mx-auto px-4 md:px-6">
+          <div className={`relative flex items-center justify-between transition-all duration-300 ${
             scrolled ? 'h-16' : 'h-20'
           }`}>
-            {/* Logo met slogan */}
-            <Link href="/" className="flex items-center group">
-              <div className="flex items-center">
-                <div className={`mr-3 relative transition-all duration-300 ${
-                  scrolled ? 'scale-90' : 'scale-100'
-                }`}>
-                  {/* Logo - vervang dit met je eigen logo */}
-                  <Image 
-                    src="/img/logo.svg" 
-                    alt="PixByte Logo" 
-                    width={70} 
-                    height={70} 
-                    className="transition-transform duration-500 group-hover:rotate-3"
-                  />
+            {/* Logo */}
+            <Link href="/" className="flex items-center group z-10">
+              <div className={`relative mr-3 transition-all duration-300 ${
+                scrolled ? 'scale-90' : 'scale-100'
+              }`}>
+                <Image 
+                  src="/img/logo.svg" 
+                  alt="PixByte Logo" 
+                  width={42} 
+                  height={42} 
+                  className="transition-transform duration-500 group-hover:scale-110"
+                />
+                {/* Animated glow effect on hover */}
+                <motion.div 
+                  className="absolute inset-0 bg-blue-400/20 rounded-full blur-xl -z-10"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileHover={{ opacity: 1, scale: 1.2 }}
+                  transition={{ duration: 0.4 }}
+                />
+              </div>
+              
+              <div>
+                <div className="text-lg font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+                  PIXBYTE
                 </div>
-                <div>
-                  <div className="text-lg font-bold bg-gradient-to-br from-blue-500 to-purple-600 bg-clip-text text-transparent transition-all">
-                   PIXBYTE
-                  </div>
-                  <div className="text-xs text-gray-500 font-medium">
-                    SMALL BYTES, BIG IMPACT
-                  </div>
+                <div className="text-xs tracking-wider text-gray-500 font-medium">
+                  SMALL BYTES, BIG IMPACT
                 </div>
               </div>
             </Link>
 
-            {/* Desktop Menu en Wave Contact Bar */}
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-1">
+              {navLinks.map((link, index) => (
+                <motion.div 
+                  key={link.path}
+                  custom={index}
+                  variants={linkVariants}
+                  whileHover="hover"
+                >
+                  <Link 
+                    href={link.path}
+                    className="relative px-3 py-2 block"
+                    onClick={() => setActiveLink(link.path)}
+                  >
+                    <span className={`text-sm font-medium ${
+                      activeLink === link.path 
+                        ? 'text-blue-600' 
+                        : 'text-gray-700 hover:text-blue-600 transition-colors'
+                    }`}>
+                      {link.name}
+                    </span>
+
+                    {/* Active indicator */}
+                    {activeLink === link.path && (
+                      <motion.span 
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"
+                        layoutId="navbar-active-indicator"
+                        initial={{ opacity: 0, width: '0%' }}
+                        animate={{ opacity: 1, width: '100%' }}
+                        transition={{ duration: 0.3 }}
+                      />
+                    )}
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Contact Button */}
             <div className="hidden md:flex items-center">
-              {/* Navigatie Links */}
-              <div className="flex items-center space-x-2 mr-6">
-                {navLinks.map((link, index) => (
-                  <div key={link.path} className="relative">
-                    <Link 
-                      href={link.path}
-                      className={`px-4 py-2 text-sm font-medium transition-colors relative ${
-                        activeLink === link.path 
-                          ? 'text-blue-600' 
-                          : 'text-gray-700 hover:text-blue-600'
-                      }`}
-                      onClick={() => setActiveLink(link.path)}
-                    >
-                      <motion.span
-                        initial="hidden"
-                        animate="visible"
-                        custom={index}
-                        variants={menuItemVariants}
-                      >
-                        {link.name}
-                      </motion.span>
-                      
-                      {/* Active indicator */}
-                      {activeLink === link.path && (
-                        <motion.span 
-                          className="absolute bottom-0 left-0 right-0 mx-auto h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"
-                          initial="hidden"
-                          animate="visible"
-                          variants={underlineVariants}
-                        />
-                      )}
-                    </Link>
-                  </div>
-                ))}
+              <div className="flex items-center space-x-3 mr-2">                
+                <motion.a 
+                  href={`mailto:${contactInfo.email}`}
+                  className="text-sm text-gray-600 hover:text-blue-600 transition-colors flex items-center"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <Mail size={16} className="mr-1.5 text-blue-500" />
+                  <span>{contactInfo.email}</span>
+                </motion.a>
+                
+                <span className="h-4 w-px bg-gray-300"></span>
+                
+                <motion.a 
+                  href={`tel:${contactInfo.phone.replace(/\s/g, '')}`}
+                  className="text-sm text-gray-600 hover:text-blue-600 transition-colors flex items-center"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <Phone size={16} className="mr-1.5 text-blue-500" />
+                  <span>{contactInfo.phone}</span>
+                </motion.a>
               </div>
               
-              {/* Wave contact bar - geïntegreerd in de navbar */}
-              <div className="relative h-8 overflow-hidden rounded-l-full pl-4">
-                {/* SVG wave voor achtergrond */}
-                <svg 
-                  className="absolute right-0 top-0 h-full" 
-                  width="15" 
-                  viewBox="0 0 15 40" 
-                  preserveAspectRatio="none"
-                >
-                  <path 
-                    d="M0,0 Q7.5,20 0,40 L15,40 L15,0 Z" 
-                    fill="url(#blue-gradient)" 
-                  />
-                  <defs>
-                    <linearGradient id="blue-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#3B82F6" />
-                      <stop offset="100%" stopColor="#8B5CF6" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-
-                {/* Animerende wave overlay */}
-                <motion.div 
-                  className="absolute inset-0 opacity-30"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%)',
-                  }}
-                  animate={{ 
-                    x: ['-25%', '125%'],
-                    opacity: [0.1, 0.3, 0.1]
-                  }}
-                  transition={{ 
-                    repeat: Infinity, 
-                    duration: 4, 
-                    ease: "easeInOut" 
-                  }}
-                />
-
-                <div className="relative h-full px-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-l-full flex items-center space-x-4">
-                  <motion.a 
-                    href={`mailto:${contactInfo.email}`} 
-                    className="flex items-center text-white text-xs font-medium hover:text-blue-100 transition-colors group"
-                    whileHover={{ scale: 1.03 }}
-                  >
-                    <Mail size={14} className="mr-1.5 group-hover:rotate-12 transition-transform" />
-                    <span>{contactInfo.email}</span>
-                  </motion.a>
-                  <motion.a 
-                    href={`tel:${contactInfo.phone.replace(/\s/g, '')}`} 
-                    className="flex items-center text-white text-xs font-medium hover:text-blue-100 transition-colors group"
-                    whileHover={{ scale: 1.03 }}
-                  >
-                    <Phone size={14} className="mr-1.5 group-hover:rotate-12 transition-transform" />
-                    <span>{contactInfo.phone}</span>
-                  </motion.a>
-                </div>
-              </div>
-
-              {/* Contact button */}
-              <Link href="/contact" className="ml-3">
+              <Link href="/contact">
                 <motion.button 
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-5 py-2 rounded-lg font-medium text-sm transition-all shadow-md hover:shadow-lg hover:shadow-blue-200"
+                  className="relative group px-5 py-2 rounded-full overflow-hidden"
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  Contact
+                  {/* Button background with gradient */}
+                  <span className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full" />
+                  
+                  {/* Animated glow effect */}
+                  <span className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity duration-300">
+                    <span className="absolute inset-0 bg-white blur-md" />
+                  </span>
+                  
+                  {/* Animated shine effect */}
+                  <motion.span 
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12"
+                    initial={{ left: '-100%' }}
+                    animate={{ left: ['100%', '100%', '-100%'] }}
+                    transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 1 }}
+                  />
+                  
+                  {/* Button text */}
+                  <span className="relative text-sm font-medium text-white">
+                    Contact
+                  </span>
                 </motion.button>
               </Link>
             </div>
 
-            {/* Mobile Menu Button */}
-            <div className="md:hidden">
-              <button 
+            {/* Mobile Menu Toggle */}
+            <div className="md:hidden z-20">
+              <motion.button
+                whileTap={{ scale: 0.95 }}
                 onClick={toggleMenu}
-                className="p-2 focus:outline-none rounded-md"
-                aria-label="Menu"
+                className="p-2 rounded-md focus:outline-none"
+                aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
               >
-                <div className="w-6 flex flex-col items-end justify-center gap-1.5 relative">
-                  <span className={`block h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-all duration-300 ease-out ${
-                    isMobileMenuOpen ? 'w-6 rotate-45 translate-y-2' : 'w-6'
-                  }`}></span>
-                  <span className={`block h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full transition-all duration-300 ease-out ${
-                    isMobileMenuOpen ? 'opacity-0' : 'w-4'
-                  }`}></span>
-                  <span className={`block h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-all duration-300 ease-out ${
-                    isMobileMenuOpen ? 'w-6 -rotate-45 -translate-y-2' : 'w-5'
-                  }`}></span>
+                <div className="w-6 h-6 flex items-center justify-center">
+                  <AnimatePresence initial={false} mode="wait">
+                    {isMobileMenuOpen ? (
+                      <motion.div
+                        key="close"
+                        initial={{ opacity: 0, rotate: -90 }}
+                        animate={{ opacity: 1, rotate: 0 }}
+                        exit={{ opacity: 0, rotate: 90 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <X className="text-blue-600" size={24} />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="menu"
+                        initial={{ opacity: 0, rotate: 90 }}
+                        animate={{ opacity: 1, rotate: 0 }}
+                        exit={{ opacity: 0, rotate: -90 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Menu className="text-blue-600" size={24} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              </button>
+              </motion.button>
             </div>
-          </nav>
+          </div>
         </div>
       </div>
 
-      {/* Mobile Menu with framer-motion for smooth animations */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div 
-            className="md:hidden bg-white/95 backdrop-blur-md w-full shadow-lg overflow-hidden"
-            initial="hidden"
-            animate="visible"
-            exit="exit"
+          <motion.div
+            ref={mobileMenuRef}
+            className="md:hidden absolute top-full left-0 right-0 bg-white shadow-lg shadow-blue-100/20 z-10"
+            initial="closed"
+            animate="open"
+            exit="closed"
             variants={mobileMenuVariants}
           >
-            <div className="container mx-auto px-4">
-              <div className="py-2">
-                {/* Mobiele contactgegevens met wave effect */}
-                <motion.div variants={mobileItemVariants} className="mb-2 py-2 px-4">
-                  <div className="rounded-lg overflow-hidden relative">
-                    {/* Mini wave voor mobiel */}
-                    <div className="absolute top-0 right-0 h-full w-3">
-                      <svg className="h-full w-full" viewBox="0 0 10 40" preserveAspectRatio="none">
-                        <path d="M10,0 Q2.5,20 10,40 L0,40 L0,0 Z" fill="url(#mobile-gradient)" />
-                        <defs>
-                          <linearGradient id="mobile-gradient" x1="100%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stopColor="#3B82F6" />
-                            <stop offset="100%" stopColor="#8B5CF6" />
-                          </linearGradient>
-                        </defs>
-                      </svg>
-                    </div>
-
-                    <div className="bg-blue-50 p-3 rounded-lg">
-                      <div className="border-l-4 border-blue-500 pl-3 py-1">
-                        <a href={`mailto:${contactInfo.email}`} className="flex items-center py-1.5 text-blue-600">
-                          <Mail size={16} className="mr-2" />
-                          <span className="text-sm">{contactInfo.email}</span>
-                        </a>
-                        <a href={`tel:${contactInfo.phone.replace(/\s/g, '')}`} className="flex items-center py-1.5 text-blue-600">
-                          <Phone size={16} className="mr-2" />
-                          <span className="text-sm">{contactInfo.phone}</span>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-                
-                {/* Navigatie links */}
-                {navLinks.map((link) => (
-                  <motion.div key={link.path} variants={mobileItemVariants}>
-                    <Link 
-                      href={link.path} 
-                      className={`block py-3 px-4 font-medium border-b border-gray-100 ${
+            <div className="container mx-auto p-4">
+              <div className="flex flex-col space-y-1">
+                {navLinks.map((link, index) => (
+                  <motion.div 
+                    key={link.path} 
+                    variants={mobileItemVariants}
+                    custom={index}
+                  >
+                    <Link
+                      href={link.path}
+                      className={`block py-3 px-4 rounded-lg text-sm font-medium transition-colors ${
                         activeLink === link.path
-                          ? 'text-blue-600 border-l-4 border-l-blue-500 pl-3'
-                          : 'text-gray-700 hover:text-blue-600'
+                          ? 'bg-blue-50 text-blue-600 border-l-4 border-blue-500'
+                          : 'text-gray-700 hover:bg-gray-50'
                       }`}
                       onClick={() => {
                         setActiveLink(link.path);
@@ -407,24 +348,57 @@ const Navbar: React.FC = () => {
                     </Link>
                   </motion.div>
                 ))}
-                
-                <motion.div variants={mobileItemVariants}>
-                  <Link 
-                    href="/contact" 
-                    className="block mt-2 mx-3"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <div className="py-3 px-4 text-center text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg font-medium">
-                      Contact
-                    </div>
-                  </Link>
-                </motion.div>
               </div>
+
+              {/* Mobile Contact Info */}
+              <motion.div 
+                variants={mobileItemVariants}
+                className="mt-4 pt-4 border-t border-gray-100"
+              >
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4">
+                  <h4 className="text-sm font-semibold text-gray-900 mb-3">Contact Informatie</h4>
+                  
+                  <div className="space-y-3">
+                    <a 
+                      href={`mailto:${contactInfo.email}`}
+                      className="flex items-center text-sm text-gray-600 hover:text-blue-600 transition-colors"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                        <Mail size={14} className="text-blue-600" />
+                      </div>
+                      {contactInfo.email}
+                    </a>
+                    
+                    <a 
+                      href={`tel:${contactInfo.phone.replace(/\s/g, '')}`}
+                      className="flex items-center text-sm text-gray-600 hover:text-blue-600 transition-colors"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3">
+                        <Phone size={14} className="text-purple-600" />
+                      </div>
+                      {contactInfo.phone}
+                    </a>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Mobile Contact Button */}
+              <motion.div variants={mobileItemVariants} className="mt-4">
+                <Link 
+                  href="/contact" 
+                  className="block w-full"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <button className="w-full py-3 text-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium text-sm">
+                    Neem contact op
+                  </button>
+                </Link>
+              </motion.div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </motion.header>
   );
 };
 
