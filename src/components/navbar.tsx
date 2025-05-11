@@ -160,8 +160,8 @@ const Navbar: React.FC = () => {
                 <Image 
                   src="/img/logo.svg" 
                   alt="PixByte Logo" 
-                  width={42} 
-                  height={42} 
+                  width={50} 
+                  height={50} 
                   className="transition-transform duration-500 group-hover:scale-110"
                 />
                 {/* Animated glow effect on hover */}
