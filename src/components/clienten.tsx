@@ -167,7 +167,14 @@ const ClientPortfolioSection: React.FC = () => {
   };
 
   // Get clients to display (either all for desktop or active chunk for mobile)
-
+  const getVisibleClients = () => {
+    if (!isMobile) return clients;
+    
+    const itemsPerView = 1;
+    const startIdx = activeIndex * itemsPerView;
+    return clients.slice(startIdx, startIdx + itemsPerView);
+  };
+getVisibleClients();
 
   // Handle manual navigation for mobile carousel
   const handleNextClient = () => {
