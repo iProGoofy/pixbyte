@@ -9,52 +9,18 @@ interface Client {
   name: string;
   logo: string;
   url: string;
-  description?: string; // Optionele korte beschrijving
+  description?: string;
 }
 
 const clients: Client[] = [
   {
     id: 1,
-    name: 'Klant A',
-    logo: '/img/clients/klant-a.png',
-    url: 'https://www.klant-a.nl',
-    description: 'Web Development & Branding'
+    name: 'CoachedByOsman',
+    logo: '/img/clients/coachedbyosman.png',
+    url: 'https://www.coachedbyosman.nl',
+    description: 'Coaching & Training'
   },
-  {
-    id: 2,
-    name: 'Klant B',
-    logo: '/img/clients/klant-b.png',
-    url: 'https://www.klant-b.nl',
-    description: 'E-commerce Solutions'
-  },
-  {
-    id: 3,
-    name: 'Klant C',
-    logo: '/img/clients/klant-c.png',
-    url: 'https://www.klant-c.nl',
-    description: 'Mobile App Development'
-  },
-  {
-    id: 4,
-    name: 'Klant D',
-    logo: '/img/clients/klant-d.png',
-    url: 'https://www.klant-d.nl',
-    description: 'UI/UX Design'
-  },
-  {
-    id: 5,
-    name: 'Klant E',
-    logo: '/img/clients/klant-e.png',
-    url: 'https://www.klant-e.nl',
-    description: 'Digital Marketing'
-  },
-  {
-    id: 6,
-    name: 'Klant F',
-    logo: '/img/clients/klant-f.png',
-    url: 'https://www.klant-f.nl',
-    description: 'CMS Implementation'
-  },
+ 
 ];
 
 const ClientPortfolioSection: React.FC = () => {
@@ -166,19 +132,9 @@ const ClientPortfolioSection: React.FC = () => {
     }
   };
 
-  // Get clients to display (either all for desktop or active chunk for mobile)
-  const getVisibleClients = () => {
-    if (!isMobile) return clients;
-    
-    const itemsPerView = 1;
-    const startIdx = activeIndex * itemsPerView;
-    return clients.slice(startIdx, startIdx + itemsPerView);
-  };
-getVisibleClients();
-
   // Handle manual navigation for mobile carousel
   const handleNextClient = () => {
-    if (activeIndex < Math.ceil(clients.length / 1) - 1) {
+    if (activeIndex < clients.length - 1) {
       setActiveIndex(activeIndex + 1);
     }
   };
@@ -211,13 +167,13 @@ getVisibleClients();
             variants={headerVariants}
             className="text-center mb-10 md:mb-16"
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent tracking-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent tracking-tight">
               Onze trotse klanten
             </h2>
-            <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
               Samenwerkingen die leiden tot succesvolle digitale transformaties
             </p>
-            <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto mt-5 rounded-full"></div>
+            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto mt-5 rounded-full"></div>
           </motion.div>
 
           {/* Desktop View - Horizontal Scrollable Clients */}
@@ -226,36 +182,36 @@ getVisibleClients();
             className="relative hidden md:block"
           >
             {/* Navigation Controls */}
-            <div className="absolute top-1/2 -translate-y-1/2 -left-3 md:-left-5 z-10">
+            <div className="absolute top-1/2 -translate-y-1/2 -left-4 md:-left-6 z-10">
               <button
                 onClick={scrollLeft}
                 disabled={!canScrollLeft}
-                className={`flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-lg 
+                className={`flex items-center justify-center w-12 h-12 rounded-full bg-white shadow-lg 
                   ${canScrollLeft ? 'hover:bg-gray-50 text-gray-800' : 'text-gray-300 cursor-not-allowed'} 
                   transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
                 aria-label="Scroll left"
               >
-                <ChevronLeft size={20} />
+                <ChevronLeft size={24} />
               </button>
             </div>
             
-            <div className="absolute top-1/2 -translate-y-1/2 -right-3 md:-right-5 z-10">
+            <div className="absolute top-1/2 -translate-y-1/2 -right-4 md:-right-6 z-10">
               <button
                 onClick={scrollRight}
                 disabled={!canScrollRight}
-                className={`flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-lg 
+                className={`flex items-center justify-center w-12 h-12 rounded-full bg-white shadow-lg 
                   ${canScrollRight ? 'hover:bg-gray-50 text-gray-800' : 'text-gray-300 cursor-not-allowed'} 
                   transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
                 aria-label="Scroll right"
               >
-                <ChevronRight size={20} />
+                <ChevronRight size={24} />
               </button>
             </div>
 
             {/* Client Cards Container */}
             <div 
               ref={scrollContainerRef}
-              className="flex gap-6 overflow-x-auto pb-8 px-1 snap-x snap-mandatory scrollbar-hide"
+              className="flex gap-6 overflow-x-auto pb-8 px-2 snap-x snap-mandatory scrollbar-hide"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               <style jsx global>{`
@@ -272,13 +228,13 @@ getVisibleClients();
                   target="_blank"
                   rel="noopener noreferrer"
                   variants={clientVariants}
-                  className="flex-shrink-0 snap-center rounded-xl bg-white shadow-md hover:shadow-xl transition-all duration-300 p-6 w-64 h-48 flex flex-col items-center justify-between group border border-gray-100"
+                  className="flex-shrink-0 snap-center rounded-xl bg-white shadow-lg hover:shadow-xl transition-all duration-300 p-6 w-80 h-64 flex flex-col items-center justify-between group border border-gray-100"
                   whileHover={{ 
                     y: -5, 
                     boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" 
                   }}
                 >
-                  <div className="relative w-full h-20 flex items-center justify-center">
+                  <div className="relative w-full h-28 flex items-center justify-center">
                     <Image
                       src={client.logo}
                       alt={client.name}
@@ -287,19 +243,19 @@ getVisibleClients();
                     />
                   </div>
                   
-                  <div className="text-center mt-4">
-                    <h3 className="font-semibold text-gray-800 text-lg mb-1 group-hover:text-blue-600 transition-colors">
+                  <div className="text-center mt-6 w-full">
+                    <h3 className="font-bold text-gray-800 text-xl mb-2 group-hover:text-blue-600 transition-colors">
                       {client.name}
                     </h3>
                     {client.description && (
-                      <p className="text-sm text-gray-500">{client.description}</p>
+                      <p className="text-base text-gray-600 font-medium">{client.description}</p>
                     )}
                   </div>
                   
-                  <div className="mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <div className="flex items-center text-xs font-medium text-blue-600">
-                      <span className="mr-1">Bekijk</span>
-                      <ExternalLink size={12} />
+                  <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <div className="flex items-center text-sm font-medium text-blue-600 border border-blue-200 px-3 py-1 rounded-full bg-blue-50">
+                      <span className="mr-1">Bekijk website</span>
+                      <ExternalLink size={14} />
                     </div>
                   </div>
                 </motion.a>
@@ -318,12 +274,12 @@ getVisibleClients();
                 <button
                   onClick={handlePrevClient}
                   disabled={activeIndex === 0}
-                  className={`flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-md 
+                  className={`flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-md 
                     ${activeIndex > 0 ? 'text-gray-800' : 'text-gray-300 cursor-not-allowed'} 
                     transition-all duration-200`}
                   aria-label="Previous client"
                 >
-                  <ChevronLeft size={16} />
+                  <ChevronLeft size={20} />
                 </button>
               </div>
               
@@ -331,12 +287,12 @@ getVisibleClients();
                 <button
                   onClick={handleNextClient}
                   disabled={activeIndex >= clients.length - 1}
-                  className={`flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-md 
+                  className={`flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-md 
                     ${activeIndex < clients.length - 1 ? 'text-gray-800' : 'text-gray-300 cursor-not-allowed'} 
                     transition-all duration-200`}
                   aria-label="Next client"
                 >
-                  <ChevronRight size={16} />
+                  <ChevronRight size={20} />
                 </button>
               </div>
 
@@ -348,13 +304,13 @@ getVisibleClients();
                     href={clients[activeIndex].url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-xl bg-white shadow-md p-6 w-full max-w-xs h-48 flex flex-col items-center justify-between border border-gray-100"
+                    className="rounded-xl bg-white shadow-lg p-6 w-full max-w-xs h-64 flex flex-col items-center justify-between border border-gray-100"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.25 }}
                   >
-                    <div className="relative w-full h-20 flex items-center justify-center">
+                    <div className="relative w-full h-28 flex items-center justify-center">
                       <Image
                         src={clients[activeIndex].logo}
                         alt={clients[activeIndex].name}
@@ -363,18 +319,18 @@ getVisibleClients();
                       />
                     </div>
                     
-                    <div className="text-center mt-4">
-                      <h3 className="font-semibold text-gray-800 text-lg mb-1">
+                    <div className="text-center mt-6 w-full">
+                      <h3 className="font-bold text-gray-800 text-xl mb-2">
                         {clients[activeIndex].name}
                       </h3>
                       {clients[activeIndex].description && (
-                        <p className="text-sm text-gray-500">{clients[activeIndex].description}</p>
+                        <p className="text-base text-gray-600 font-medium">{clients[activeIndex].description}</p>
                       )}
                     </div>
                     
-                    <div className="mt-3 flex items-center text-xs font-medium text-blue-600">
-                      <span className="mr-1">Bekijk</span>
-                      <ExternalLink size={12} />
+                    <div className="mt-4 flex items-center text-sm font-medium text-blue-600 border border-blue-200 px-3 py-1 rounded-full bg-blue-50">
+                      <span className="mr-1">Bekijk website</span>
+                      <ExternalLink size={14} />
                     </div>
                   </motion.a>
                 </AnimatePresence>
@@ -388,7 +344,7 @@ getVisibleClients();
                     onClick={() => setActiveIndex(index)}
                     className={`w-2 h-2 rounded-full transition-all duration-300 ${
                       activeIndex === index 
-                        ? 'bg-blue-600 w-4' 
+                        ? 'bg-blue-600 w-6' 
                         : 'bg-gray-300 hover:bg-gray-400'
                     }`}
                     aria-label={`Go to client ${index + 1}`}
@@ -401,14 +357,14 @@ getVisibleClients();
           {/* Call to Action */}
           <motion.div
             variants={headerVariants}
-            className="mt-14 text-center"
+            className="mt-16 text-center"
           >
             <a 
               href="/projecten" 
-              className="inline-flex items-center px-5 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-md shadow-md hover:shadow-lg transition-all duration-300 group"
+              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-lg font-medium rounded-md shadow-md hover:shadow-lg transition-all duration-300 group"
             >
               <span>Bekijk onze projecten</span>
-              <ChevronRight size={16} className="ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+              <ChevronRight size={18} className="ml-2 transition-transform duration-300 group-hover:translate-x-1" />
             </a>
           </motion.div>
         </motion.div>
