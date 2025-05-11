@@ -12,6 +12,7 @@ const Navbar: React.FC = () => {
   const [activeLink, setActiveLink] = useState('');
   const [isMounted, setIsMounted] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
 
   // Effect voor scroll detectie en client-side initialisatie
   useEffect(() => {
@@ -33,7 +34,12 @@ const Navbar: React.FC = () => {
     
     // Handle clicks outside mobile menu to close it
     const handleClickOutside = (event: MouseEvent) => {
-      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+      if (
+        mobileMenuRef.current && 
+        !mobileMenuRef.current.contains(event.target as Node) &&
+        hamburgerRef.current && 
+        !hamburgerRef.current.contains(event.target as Node)
+      ) {
         setIsMobileMenuOpen(false);
       }
     };
@@ -277,6 +283,7 @@ const Navbar: React.FC = () => {
             {/* Mobile Menu Toggle */}
             <div className="md:hidden z-20">
               <motion.button
+                ref={hamburgerRef}
                 whileTap={{ scale: 0.95 }}
                 onClick={toggleMenu}
                 className="p-2 rounded-md focus:outline-none"

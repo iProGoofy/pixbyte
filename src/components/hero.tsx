@@ -14,15 +14,33 @@ interface Particle {
   opacity: number;
 }
 
-
-const HeroSection: React.FC= () => {
+const HeroSection: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [typedText, setTypedText] = useState('');
+  const fullText = 'TRANSFORMEER UW VISIE NAAR';
   
   // Animation effect voor fade-in elementen
   useEffect(() => {
     setIsVisible(true);
   }, []);
+
+  // Typewriter effect
+  useEffect(() => {
+    if (isVisible) {
+      let currentIndex = 0;
+      const typingInterval = setInterval(() => {
+        if (currentIndex < fullText.length) {
+          setTypedText(fullText.slice(0, currentIndex + 1));
+          currentIndex++;
+        } else {
+          clearInterval(typingInterval);
+        }
+      }, 100); // Snelheid van het typen aanpassen
+
+      return () => clearInterval(typingInterval);
+    }
+  }, [isVisible]);
 
   // Particle animation effect
   useEffect(() => {
@@ -113,7 +131,10 @@ const HeroSection: React.FC= () => {
           {/* Tekst sectie */}
           <div className={`w-full lg:w-1/2 lg:pr-12 mb-12 lg:mb-0 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 mb-6 leading-tight">
-              TRANSFORMEER UW VISIE NAAR
+              <div className="typewriter-container relative">
+                <span className="typewriter-text inline-block">{typedText}</span>
+                <span className={`cursor absolute -right-1 bottom-0 h-[0.9em] w-[2px] bg-gray-800 ${typedText.length < fullText.length ? 'animate-blink' : ''}`}></span>
+              </div>
               <span className="block bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">EEN DIGITALE REALITEIT</span>
             </h1>
             <p className="text-base sm:text-lg text-gray-600 mb-8 max-w-xl">
@@ -183,6 +204,17 @@ const HeroSection: React.FC= () => {
           ></path>
         </svg>
       </div>
+
+      {/* Voeg CSS voor de typewriter animatie toe */}
+      <style jsx>{`
+        @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+        }
+        .animate-blink {
+          animation: blink 0.8s infinite;
+        }
+      `}</style>
     </div>
   );
 };
