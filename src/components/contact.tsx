@@ -1,6 +1,6 @@
 'use client';
 import React, { useRef, useEffect, useState } from 'react';
-import Image from 'next/image';
+
 
 const ContactSection: React.FC = () => {
   const [isInView, setIsInView] = useState(false);
