@@ -45,7 +45,31 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
+  openGraph: {
+    title: "PixByte - IT Solutions",
+    description: "Uw partner in digitale oplossingen",
+    url: "https://www.pixbyte.nl",
+    siteName: "PixByte",
+    images: [
+      {
+        url: "https://www.pixbyte.nl/img/logo.svg",
+        width: 1200,
+        height: 630,
+        alt: "PixByte Logo en Slogan",
+      },
+    ],
+    locale: "nl_NL",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PixByte - IT Solutions",
+    description: "Uw partner in digitale oplossingen",
+    images: ["https://www.pixbyte.nl/img/social-card.png"],
+    creator: "@pixbyte",
+  },
 };
+
 
 export const viewport = {
   width: "device-width",

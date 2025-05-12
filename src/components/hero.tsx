@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FileText } from 'lucide-react';
+import RotatingText from './RotatingText';
 
 interface Particle {
   x: number;
@@ -17,37 +18,11 @@ interface Particle {
 const HeroSection: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [typedText, setTypedText] = useState('');
-  const fullText = 'TRANSFORMEER UW VISIE NAAR EEN DIGITALE REALITEIT';
-  const [firstPart] = ['TRANSFORMEER UW VISIE NAAR', 'EEN DIGITALE REALITEIT'];
-  const [showGradient, setShowGradient] = useState(false);
 
   // Animation effect voor fade-in elementen
   useEffect(() => {
     setIsVisible(true);
   }, []);
-
-  // Typewriter effect
-  useEffect(() => {
-    if (isVisible) {
-      let currentIndex = 0;
-      const typingInterval = setInterval(() => {
-        if (currentIndex < fullText.length) {
-          setTypedText(fullText.slice(0, currentIndex + 1));
-          currentIndex++;
-          
-          // Check if first part is complete to apply gradient to second part
-          if (currentIndex >= firstPart.length) {
-            setShowGradient(true);
-          }
-        } else {
-          clearInterval(typingInterval);
-        }
-      }, 100); // Snelheid van het typen aanpassen
-      
-      return () => clearInterval(typingInterval);
-    }
-  }, [isVisible]);
 
   // Particle animation effect
   useEffect(() => {
@@ -122,20 +97,13 @@ const HeroSection: React.FC = () => {
     };
   }, []);
 
-  // Split the typed text into first and second part for styling
-  const getFirstPartTyped = () => {
-    if (typedText.length <= firstPart.length) {
-      return typedText;
-    }
-    return firstPart;
-  };
-
-  const getSecondPartTyped = () => {
-    if (typedText.length <= firstPart.length) {
-      return '';
-    }
-    return typedText.slice(firstPart.length);
-  };
+  // Teksten voor RotatingText
+  const rotatingTexts = [
+    'INNOVATIEVE DIGITALE OPLOSSINGEN',
+    'EXPERT DEVELOPMENT TEAM',
+    'RESULTAATGERICHTE AANPAK',
+    'KWALITEIT & BETROUWBAARHEID'
+  ];
 
   return (
     <div className="relative bg-gradient-to-br from-purple-50 to-blue-50 pt-20 pb-16 overflow-hidden">
@@ -149,13 +117,19 @@ const HeroSection: React.FC = () => {
           {/* Tekst sectie */}
           <div className={`w-full lg:w-1/2 lg:pr-12 mb-12 lg:mb-0 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 mb-6 leading-tight">
-              <div className="typewriter-container relative">
-                <span className="typewriter-text inline-block">{getFirstPartTyped()}</span>
-                <span className={`typewriter-text inline-block ${showGradient ? 'bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent' : ''}`}>
-                  {" " + getSecondPartTyped()}
-                </span>
-                <span className={`cursor absolute -right-1 bottom-0 h-[0.9em] w-[2px] bg-gray-800 ${typedText.length < fullText.length ? 'animate-blink' : ''}`}></span>
-              </div>
+              <span className="block mb-4">Wij bieden</span>
+              <RotatingText
+                texts={rotatingTexts}
+                mainClassName="px-2 sm:px-2 md:px-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white overflow-hidden py-0.5 sm:py-1 md:py-2 justify-center rounded-lg"
+                staggerFrom="last"
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                exit={{ y: "-120%" }}
+                staggerDuration={0.025}
+                splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
+                transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                rotationInterval={3000}
+              />
             </h1>
             <p className="text-base sm:text-lg text-gray-600 mb-8 max-w-xl">
               Geef je bedrijf een boost met innovatieve oplossingen die groei en
@@ -221,16 +195,6 @@ const HeroSection: React.FC = () => {
           ></path>
         </svg>
       </div>
-      {/* Voeg CSS voor de typewriter animatie toe */}
-      <style jsx>{`
-        @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
-        }
-        .animate-blink {
-          animation: blink 0.8s infinite;
-        }
-      `}</style>
     </div>
   );
 };
