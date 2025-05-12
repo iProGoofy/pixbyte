@@ -8,7 +8,6 @@ import {
   useMemo,
   useState,
   CSSProperties,
-  ReactNode,
 } from "react";
 import { motion, AnimatePresence, MotionProps, Target } from "framer-motion";
 
@@ -79,9 +78,11 @@ const RotatingText = forwardRef<RotatingTextRef, RotatingTextProps>((props, ref)
   const splitIntoCharacters = (text: string): string[] => {
     if (typeof Intl !== "undefined" && "Segmenter" in Intl) {
       try {
-        // TypeScript may not recognize Segmenter yet, so we use a type assertion
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const segmenter = new (Intl as any).Segmenter("en", { granularity: "grapheme" });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return Array.from(segmenter.segment(text), (segment: any) => segment.segment);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         // Fallback if Segmenter is not available
         return Array.from(text);
@@ -213,7 +214,8 @@ const RotatingText = forwardRef<RotatingTextRef, RotatingTextProps>((props, ref)
     >
       {/* Screen-reader only text */}
       <span className="sr-only">{texts[currentTextIndex]}</span>
-      <AnimatePresence mode={animatePresenceMode as any} initial={animatePresenceInitial}>
+      
+      <AnimatePresence mode={animatePresenceMode ?? "wait"} initial={animatePresenceInitial}>
         <motion.div
           key={currentTextIndex}
           className={cn(
