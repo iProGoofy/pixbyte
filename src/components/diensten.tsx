@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import Image from 'next/image';
+
 
 const FeaturesSection: React.FC = () => {
   const [selectedFeature, setSelectedFeature] = useState<number | null>(null);
