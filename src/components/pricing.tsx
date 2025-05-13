@@ -1,9 +1,9 @@
 'use client';
+
 import React, { useRef, useEffect, useState } from 'react';
 
 const PricingSection: React.FC = () => {
   const [isInView, setIsInView] = useState(false);
-  const [isAnnual, setIsAnnual] = useState(true);
   const [hoveredPlan, setHoveredPlan] = useState<number | null>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -11,7 +11,7 @@ const PricingSection: React.FC = () => {
   useEffect(() => {
     const node = sectionRef.current;
     if (!node) return;
-    
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !isInView) {
@@ -21,7 +21,7 @@ const PricingSection: React.FC = () => {
       },
       { threshold: 0.1 }
     );
-  
+
     observer.observe(node);
     return () => observer.disconnect();
   }, [isInView]);
@@ -30,10 +30,9 @@ const PricingSection: React.FC = () => {
   const pricingPlans = [
     {
       id: 1,
-      name: "Starter",
-      description: "Perfect voor kleine bedrijven die online willen starten",
-      monthlyPrice: 79,
-      annualPrice: 69,
+      name: "Website",
+      description: "Professionele website voor uw bedrijf",
+      price: 695,
       features: [
         "Professionele website (5 pagina's)",
         "Responsive design",
@@ -42,45 +41,41 @@ const PricingSection: React.FC = () => {
         "Google Analytics koppeling",
         "3 maanden gratis onderhoud"
       ],
+      note: "Voor meer pagina's, neem contact met ons op",
       color: "from-blue-500 to-blue-600",
       popular: false,
     },
     {
       id: 2,
-      name: "Business",
-      description: "Complete oplossing voor groeiende ondernemingen",
-      monthlyPrice: 149,
-      annualPrice: 129,
+      name: "IT Beheer",
+      description: "Complete IT-ondersteuning voor uw bedrijf",
+      price: null, // Prijs op aanvraag
       features: [
-        "Professionele website (10 pagina's)",
-        "Responsive design",
-        "Contactformulier met automatisering",
-        "SEO volledig geoptimaliseerd",
-        "Google Analytics & Tag Manager",
-        "CMS-systeem voor zelf beheer",
-        "E-mail marketing integratie",
-        "6 maanden gratis onderhoud"
+        "Remote helpdesk ondersteuning",
+        "Netwerkbeheer en monitoring",
+        "Dagelijkse back-ups",
+        "Beveiligingsupdates",
+        "Hardware en software advies",
+        "Proactief systeembeheer",
+        "Cloud-oplossingen",
+        "Maandelijks onderhoudsrapport"
       ],
       color: "from-purple-500 to-indigo-600",
       popular: true,
     },
     {
       id: 3,
-      name: "Enterprise",
-      description: "Op maat gemaakte oplossingen voor grote organisaties",
-      monthlyPrice: 299,
-      annualPrice: 249,
+      name: "Branding",
+      description: "Compleet merkidentiteit pakket",
+      price: 995,
       features: [
-        "Volledig op maat gemaakte website",
-        "Responsive design",
-        "Geavanceerde formulieren met workflows",
-        "SEO & performance optimalisatie",
-        "Complete analytics suite",
-        "Geavanceerd CMS-systeem",
-        "Marketing automatisering",
-        "API integraties",
-        "12 maanden gratis onderhoud",
-        "Dedicated accountmanager"
+        "Logo ontwerp",
+        "Huisstijl ontwikkeling",
+        "Visitekaartjes ontwerp",
+        "Social media templates",
+        "Brand guidelines document",
+        "Onbeperkte revisies",
+        "Alle bronbestanden"
       ],
       color: "from-amber-500 to-orange-600",
       popular: false,
@@ -89,22 +84,23 @@ const PricingSection: React.FC = () => {
 
   // Animatie klassen
   const getContentClasses = (delay: number = 0) => {
-    return `transition-all duration-700 ${isInView 
-      ? 'opacity-100 translate-y-0' 
+    return `transition-all duration-700 ${isInView
+      ? 'opacity-100 translate-y-0'
       : 'opacity-0 translate-y-8'} transition-delay-${delay}`;
   };
 
   return (
-    <section 
+    <section
       ref={sectionRef}
       className="py-24 bg-gradient-to-b from-white to-gray-50 relative overflow-hidden"
+      id="pricing"
     >
       {/* Decoratieve elementen */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-24 right-10 w-64 h-64 bg-gradient-to-r from-blue-200/10 to-purple-200/10 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-gradient-to-r from-indigo-200/10 to-blue-200/10 rounded-full blur-3xl"></div>
       </div>
-      
+
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Sectietitel */}
         <div className={`text-center mb-16 ${getContentClasses()}`}>
@@ -120,34 +116,8 @@ const PricingSection: React.FC = () => {
             </span> van uw bedrijf
           </h2>
           <p className="text-gray-600 mt-4 text-lg max-w-2xl mx-auto">
-            Wij bieden flexibele pakketten die passen bij de behoeften en het budget van uw onderneming.
+            Wij bieden heldere tarieven voor onze diensten en maatwerk oplossingen voor uw onderneming.
           </p>
-        </div>
-
-        {/* Jaarlijks/Maandelijks toggle */}
-        <div className={`flex justify-center mb-12 ${getContentClasses(100)}`}>
-          <div className="bg-gray-100 p-1 rounded-full flex items-center">
-            <button
-              onClick={() => setIsAnnual(true)}
-              className={`text-sm px-5 py-2 rounded-full transition-all ${
-                isAnnual 
-                  ? 'bg-white text-gray-900 shadow-md' 
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Jaarlijks <span className="text-xs text-green-500 font-medium ml-1">Bespaar 15%</span>
-            </button>
-            <button
-              onClick={() => setIsAnnual(false)}
-              className={`text-sm px-5 py-2 rounded-full transition-all ${
-                !isAnnual 
-                  ? 'bg-white text-gray-900 shadow-md' 
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Maandelijks
-            </button>
-          </div>
         </div>
 
         {/* Prijsplannen */}
@@ -165,10 +135,9 @@ const PricingSection: React.FC = () => {
             >
               {plan.popular && (
                 <div className="absolute -top-5 left-0 right-0 mx-auto w-max px-4 py-1 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-sm font-medium">
-                  Meest gekozen
+                  Aanbevolen
                 </div>
               )}
-              
               <div className="bg-white rounded-xl p-8 h-full flex flex-col">
                 <div className="mb-6">
                   <h3 className={`text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r ${plan.color}`}>
@@ -178,17 +147,18 @@ const PricingSection: React.FC = () => {
                     {plan.description}
                   </p>
                 </div>
-                
                 <div className="mb-6">
-                  <div className="flex items-baseline">
-                    <span className="text-3xl font-bold text-gray-900">€{isAnnual ? plan.annualPrice : plan.monthlyPrice}</span>
-                    <span className="text-gray-500 ml-2">/ maand</span>
-                  </div>
-                  <p className="text-sm text-gray-500 mt-1">
-                    {isAnnual ? 'Jaarlijks gefactureerd' : 'Maandelijks gefactureerd'}
-                  </p>
+                  {plan.price ? (
+                    <div className="flex items-baseline">
+                      <span className="text-3xl font-bold text-gray-900">€{plan.price}</span>
+                      <span className="text-gray-500 ml-2">eenmalig</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-baseline">
+                      <span className="text-xl font-medium text-gray-900">Prijs op aanvraag</span>
+                    </div>
+                  )}
                 </div>
-                
                 <div className="flex-grow">
                   <ul className="space-y-3">
                     {plan.features.map((feature, idx) => (
@@ -205,40 +175,34 @@ const PricingSection: React.FC = () => {
                       </li>
                     ))}
                   </ul>
+                  {plan.note && (
+                    <p className="text-sm text-gray-500 italic mt-4">{plan.note}</p>
+                  )}
                 </div>
-                
                 <div className="mt-8">
-                  <button
-                    className={`w-full py-3 rounded-lg transition-all ${
+                  <a
+                    href="#contact"
+                    className={`w-full py-3 rounded-lg transition-all block text-center ${
                       hoveredPlan === plan.id || plan.popular
-                        ? `bg-gradient-to-r ${plan.color} text-white shadow-lg shadow-${plan.color.split('-')[1]}-500/30`
+                        ? `bg-gradient-to-r ${plan.color} text-white shadow-lg`
                         : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                     }`}
                   >
-                    Selecteer plan
-                  </button>
+                    Neem contact op
+                  </a>
                 </div>
               </div>
             </div>
           ))}
-        </div>
 
         {/* Aanvullende informatie */}
-        <div className={`mt-16 text-center ${getContentClasses(300)}`}>
-          <p className="text-gray-600">
-            Heeft u andere wensen of een aangepast plan nodig?
-          </p>
-            <span className="inline-flex items-center gap-2 mt-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 font-medium">Neem contact met ons op voor een offerte op maat</span>
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              className="h-4 w-4" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-        </div>
+          <div className="col-span-1 md:col-span-3 mt-8 text-center">
+            <p className="text-gray-600 text-sm">
+              Alle prijzen zijn exclusief BTW. Neem contact met ons op voor maatwerk oplossingen en meer informatie.
+            </p>
+          </div>
+
+      </div>
       </div>
     </section>
   );

@@ -1,38 +1,17 @@
 'use client';
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 
 const FeaturesSection: React.FC = () => {
-  const [isInView, setIsInView] = useState(false);
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const [activeFeature, setActiveFeature] = useState<number | null>(null);
-
-  // Vereenvoudigde IntersectionObserver - alleen laden wanneer nodig
-  useEffect(() => {
-    const node = sectionRef.current;
-    if (!node) return;
-    
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !isInView) {
-          setIsInView(true);
-          // Verwijder observer na activatie om verdere berekeningen te voorkomen
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-  
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [isInView]);
+  const [selectedFeature, setSelectedFeature] = useState<number | null>(null);
 
   // Feature items data
   const features = [
     {
       id: 1,
       title: "Web Development",
-      description: "Wereldwijd zijn er 4,57 miljard internetgebruikers, waarvan de helft van het gebruik via de telefoon is. Social media vormt 25% van alle digitale media consumptie. U merkt al dat in dit digitale tijdperk een sterke online aanwezigheid onmisbaar is.",
+      description: "Wereldwijd zijn er 4,57 miljard internetgebruikers, waarvan de helft van het gebruik via de telefoon is. Social media vormt 25% van alle digitale media consumptie.",
+      detailedContent: "Wij creëren moderne, responsieve websites en webapplicaties die perfect werken op alle apparaten. Van eenvoudige landingspagina's tot complexe e-commerce platforms, wij zorgen voor een naadloze gebruikerservaring met snelle laadtijden en intuïtieve navigatie. Onze expertise omvat front-end ontwikkeling met React, Vue en Angular, back-end implementaties met Node.js, PHP of Python, en volledig geoptimaliseerde progressive web apps voor mobiele gebruikers.",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -54,7 +33,8 @@ const FeaturesSection: React.FC = () => {
     {
       id: 2,
       title: "Branding",
-      description: "Een succesvolle onderneming begint bij een identiteit. Hiervoor is een duidelijke merkstrategie nodig. Waar staat uw merk voor? Schept u wel de juiste verwachtingen voor uw merk? Valt u op in de markt?",
+      description: "Een succesvolle onderneming begint bij een identiteit. Hiervoor is een duidelijke merkstrategie nodig. Waar staat uw merk voor?",
+      detailedContent: "Wij helpen u een sterk en herkenbaar merk te bouwen dat resoneert met uw doelgroep. Door middel van uitgebreid marktonderzoek en klantanalyse ontwikkelen we een unieke merkidentiteit die uw waarden en missie weerspiegelt. Ons team van creatieve professionals zorgt voor consistente merkuitingen in alle kanalen - van logo en visuele identiteit tot tone-of-voice en marketingcommunicatie. We creëren niet alleen een aantrekkelijk imago, maar bouwen aan een strategisch merkverhaal dat een emotionele verbinding met uw klanten aangaat.",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +56,8 @@ const FeaturesSection: React.FC = () => {
     {
       id: 3,
       title: "Haal het maximale uit uw onderneming",
-      description: "Ondernemen is nu anders dan vroeger. Waar ondernemers vaak niet bewust van zijn is dat vele processen slimmer kunnen door digitalisering en het gebruik van slimme methodieken.",
+      description: "Ondernemen is nu anders dan vroeger. Waar ondernemers vaak niet bewust van zijn is dat vele processen slimmer kunnen door digitalisering.",
+      detailedContent: "Met onze bedrijfsoptimalisatie services helpen we u het volledige potentieel van uw onderneming te benutten. We analyseren uw huidige werkprocessen en identificeren mogelijkheden voor automatisering en digitalisering die tijd en kosten besparen. Van CRM-implementatie en workflowoptimalisatie tot data-analyse en business intelligence - wij leveren de technologische oplossingen die uw efficiëntie verhogen en groei versnellen. Onze consultants werken nauw met u samen om innovatieve strategieën te ontwikkelen die passen bij uw specifieke bedrijfsdoelen.",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -97,91 +78,83 @@ const FeaturesSection: React.FC = () => {
     },
   ];
 
-  // Verminder complexiteit door slechts één decoratief element te gebruiken
-  const decorationElement = 
-    <div
-      className="absolute rounded-full bg-gradient-to-r from-blue-200/10 to-purple-200/10 blur-xl hidden lg:block"
-      style={{
-        top: '30%',
-        left: '10%',
-        width: '300px',
-        height: '300px',
-        zIndex: 0,
-      }}
-    ></div>;
-
-  // CSS klassen genereren op basis van isInView (geen complexe animaties meer)
-  const getContentClasses = () => {
-    return `transition-opacity duration-700 ${isInView ? 'opacity-100' : 'opacity-0'}`;
+  // Functie om de geselecteerde feature in te stellen
+  const handleFeatureClick = (id: number) => {
+    setSelectedFeature(selectedFeature === id ? null : id);
   };
 
   return (
-    <section 
-      ref={sectionRef} 
-      className="py-24 overflow-hidden bg-gradient-to-b from-white to-gray-50 relative"
-    >
-      {/* Beperkt tot één decoratief element */}
-      {decorationElement}
+    <section className="py-20 bg-gradient-to-b from-white to-gray-50 relative">
+      {/* Decoratief element */}
+      <div
+        className="absolute rounded-full bg-gradient-to-r from-blue-200/10 to-purple-200/10 blur-xl hidden lg:block"
+        style={{
+          top: '30%',
+          left: '10%',
+          width: '300px',
+          height: '300px',
+          zIndex: 0,
+        }}
+      ></div>
       
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 gap-14 items-center lg:grid-cols-12 lg:gap-16">
-          {/* Linker kolom - Tekst en features */}
-          <div 
-            className={`w-full xl:col-span-5 lg:col-span-6 2xl:-mx-5 xl:-mx-0 ${getContentClasses()}`}
-            style={{ transitionDelay: '100ms' }}
-          >
-            <div className="relative">
-              <span className="text-base font-medium bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600 mb-2 block lg:text-left inline-flex items-center">
-                <span className="w-8 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mr-3 hidden lg:inline-block"></span>
-                Waar wij voor staan
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 sm:leading-[3.25rem] lg:text-left">
-                Wij nemen <span className="relative">
-                  al uw IT zorgen
-                  <span className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-blue-400/40 to-purple-500/40 rounded-full"></span>
-                </span> op ons
-              </h2>
-              <p className="text-gray-600 mt-4 text-lg max-w-xl">
-                Laat ons uw digitale uitdagingen oplossen, zodat u zich kunt concentreren op het laten groeien van uw bedrijf.
-              </p>
-            </div>
+        <div className="text-center mb-12">
+          <span className="text-base font-medium bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600 inline-flex items-center justify-center">
+            <span className="w-8 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mr-3 hidden sm:inline-block"></span>
+            Waar wij voor staan
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-2">
+            Wij nemen <span className="relative">
+              al uw IT zorgen
+              <span className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-blue-400/40 to-purple-500/40 rounded-full"></span>
+            </span> op ons
+          </h2>
+          <p className="text-gray-600 mt-4 text-lg max-w-2xl mx-auto">
+            Laat ons uw digitale uitdagingen oplossen, zodat u zich kunt concentreren op het laten groeien van uw bedrijf.
+          </p>
+        </div>
 
-            <div className="space-y-8 mt-12">
-              {features.map((feature) => (
-                <div 
-                  key={feature.id}
-                  className={`p-5 rounded-xl transition-all duration-300 ${
-                    activeFeature === feature.id 
-                      ? "bg-white shadow-xl shadow-blue-100/30 scale-[1.02]" 
-                      : "hover:bg-white hover:shadow-lg"
-                  }`}
-                  onClick={() => setActiveFeature(activeFeature === feature.id ? null : feature.id)}
-
-                >
-                  <div className="flex gap-5">
-                    <div className={`rounded-lg p-3 bg-gradient-to-r ${feature.color} text-white flex-shrink-0 shadow-lg`}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          {/* Features kolom */}
+          <div className="space-y-4">
+            {features.map((feature) => (
+              <div 
+                key={feature.id}
+                className={`
+                  rounded-xl transition-all duration-200 cursor-pointer border 
+                  ${selectedFeature === feature.id 
+                    ? "border-transparent bg-white shadow-lg shadow-blue-100/40" 
+                    : "border-gray-100 hover:border-transparent hover:bg-white hover:shadow"
+                  }
+                `}
+                onClick={() => handleFeatureClick(feature.id)}
+              >
+                <div className="p-5">
+                  <div className="flex gap-4">
+                    <div className={`rounded-lg p-3 bg-gradient-to-r ${feature.color} text-white flex-shrink-0`}>
                       {feature.icon}
                     </div>
                     <div>
-                      <h3 className={`text-lg font-semibold mb-3 transition-colors duration-300 ${
-                        activeFeature === feature.id 
+                      <h3 className={`text-lg font-semibold ${
+                        selectedFeature === feature.id 
                           ? "text-transparent bg-clip-text bg-gradient-to-r " + feature.color
                           : "text-gray-900"
                       }`}>
                         {feature.title}
                       </h3>
-                      <p className="text-gray-600 leading-relaxed text-sm">
+                      <p className="text-gray-600 text-sm mt-1">
                         {feature.description}
                       </p>
-                      <div className={`mt-4 text-sm font-medium flex items-center gap-2 ${
-                        activeFeature === feature.id 
+                      <div className={`mt-2 text-sm font-medium flex items-center gap-1 
+                        ${selectedFeature === feature.id 
                           ? `text-transparent bg-clip-text bg-gradient-to-r ${feature.color}`
                           : "text-gray-500"
-                      }`}>
-                        <span>Meer weten</span>
+                        }`}
+                      >
+                        <span>{selectedFeature === feature.id ? "Sluiten" : "Meer weten"}</span>
                         <svg 
                           xmlns="http://www.w3.org/2000/svg" 
-                          className="w-4 h-4"
+                          className={`w-4 h-4 transition-transform ${selectedFeature === feature.id ? "rotate-90" : ""}`}
                           fill="none" 
                           viewBox="0 0 24 24" 
                           stroke="currentColor"
@@ -192,44 +165,58 @@ const FeaturesSection: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
 
-          {/* Rechter kolom - Afbeelding */}
-          <div 
-            className={`w-full xl:col-span-7 lg:col-span-6 lg:block ${getContentClasses()}`}
-            style={{ transitionDelay: '300ms' }}
-          >
-            <div className="relative w-full">
-              {/* Eenvoudigere decoratieve elementen */}
-              <div className="absolute -top-12 -right-12 w-64 h-64 bg-gradient-to-r from-blue-200/20 to-purple-200/20 rounded-full blur-3xl"></div>
-              
-              {/* Geoptimaliseerde afbeelding */}
-              <div className="relative">
-                <Image
-                  priority={false}
-                  src="/img/coding.png"
-                  alt="Feature section"
-                  width={1200}
-                  height={800}
-                  className="w-full rounded-2xl lg:h-auto object-cover shadow-xl shadow-blue-200/40"
-                />
+          {/* Detail content kolom */}
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden h-full">
+            {selectedFeature ? (
+              <div className="h-full">
+                {/* Header van detail content */}
+                <div className={`p-6 bg-gradient-to-r ${features.find(f => f.id === selectedFeature)?.color}`}>
+                  <h3 className="text-xl font-bold text-white">
+                    {features.find(f => f.id === selectedFeature)?.title}
+                  </h3>
+                </div>
                 
-                {/* Vereenvoudigde elementen - alleen tonen op desktop */}
-                <div className="absolute top-4 left-4 lg:flex hidden items-center gap-2 bg-white p-3 rounded-xl shadow-md">
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                {/* Main content */}
+                <div className="p-8">
+                  <div className="prose prose-sm prose-gray max-w-none">
+                    <p className="text-gray-700 leading-relaxed">
+                      {features.find(f => f.id === selectedFeature)?.detailedContent}
+                    </p>
                   </div>
-                  <span className="font-medium text-sm text-black">Custom Code</span>
+                  
+                  {/* CTA Button */}
+                  <div className="mt-8">
+                    <button
+                      className={`py-2 px-6 rounded-lg bg-gradient-to-r ${features.find(f => f.id === selectedFeature)?.color} text-white text-sm font-medium`}
+                    >
+                      Vraag een gesprek aan
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex items-center justify-center h-full p-12">
+                <div className="text-center">
+                  <div className="mb-4 mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900">Selecteer een service</h3>
+                  <p className="mt-2 text-sm text-gray-500">
+                    Klik op één van onze services om meer informatie te bekijken.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      </div>
+
+       </div>
     </section>
   );
 };
